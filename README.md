@@ -1,8 +1,7 @@
-Password:
-Project Title : Correlation Clustering on a Generative Model
-Course :        EE227B and CS281A
-Members :       Deepak Pathak - pathak@
-                WeiCheng Kuo - wckuo@
-                Horia Mania - hmania@
-Repo Address : 	https://github.com/pathak22/corr_clustering.git
---------------------------------------------------------------------------------------------
+Project Title : Correlation Clustering on a Generative Model<br/>
+Course :        EE227B and CS281A<br/>
+Members :       Deepak Pathak - pathak@<br/>
+                WeiCheng Kuo - wckuo@<br/>
+                Horia Mania - hmania@<br/>
+Repo Address : 	https://github.com/pathak22/corr_clustering.git<br/>
+--------------------------------------------------------------------------------------------<br/>
