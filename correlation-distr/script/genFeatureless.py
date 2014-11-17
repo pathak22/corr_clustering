@@ -45,7 +45,7 @@ def computePrior(options):
     if numClusters is None:
         numClusters = max(int(log(num, 1.5)), 2)
 
-    print >>sys.stderr, numClusters, "clusters"
+    print(sys.stderr, numClusters, "clusters")
 
     clusterPrior = [clusterAlpha] * numClusters
     if not balanced:
@@ -67,23 +67,23 @@ if __name__ == "__main__":
 
     clusterPrior = computePrior(options)
 
-    print >>sys.stderr, "cluster prior:",\
-          " ".join(["%.3g" % xx for xx in clusterPrior])
+    print (sys.stderr, "cluster prior:",\
+          " ".join(["%.3g" % xx for xx in clusterPrior]))
 
     clusterSizes = multinomial(trainNum, clusterPrior)
 
-    print >>sys.stderr, "training cluster sizes:",\
-          " ".join([str(xx) for xx in clusterSizes])
+    print (sys.stderr, "training cluster sizes:",\
+          " ".join([str(xx) for xx in clusterSizes]))
 
     for label in labels(trainNum, clusterSizes):
-        print label
+        print(label)
 
     print
 
     clusterSizes = multinomial(num, clusterPrior)
 
-    print >>sys.stderr, "cluster sizes:",\
-          " ".join([str(xx) for xx in clusterSizes])
+    print (sys.stderr, "cluster sizes:",\
+          " ".join([str(xx) for xx in clusterSizes]))
 
     for label in labels(num, clusterSizes):
-        print label
+        print (label)

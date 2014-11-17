@@ -15,10 +15,10 @@ def features(label, means, variances, noisemeans, noisevars):
     feats = []
     fctr = itertools.count()
     for mean,var in zip(means[label], variances[label]):
-        feats.append(fctr.next())
+        feats.append(next(fctr))
         feats.append(normal(mean, var))
     for mean,var in zip(noisemeans, noisevars):
-        feats.append(fctr.next())
+        feats.append(next(fctr))
         feats.append(normal(mean, var))
     return feats
 
@@ -53,8 +53,8 @@ if __name__ == "__main__":
     noiseFeats = options.noisefeats
     sigma = options.sigma
 
-    print >>sys.stderr, "%d real features, %d noise features" %\
-          (feats, noiseFeats)
+    print(sys.stderr, "%d real features, %d noise features" %\
+          (feats, noiseFeats))
 
     clusterPrior = computePrior(options)
 
@@ -83,40 +83,38 @@ if __name__ == "__main__":
         for feat in range(noiseFeats):
             noiseVariances[feat] += invGamma(vvar, 1.0)
 
-    print >>sys.stderr, "cluster prior:",\
-          " ".join(["%.3g" % xx for xx in clusterPrior])
+    print (sys.stderr, "cluster prior:",\
+          " ".join(["%.3g" % xx for xx in clusterPrior]))
 
-    print >>sys.stderr, "means:"
+    print (sys.stderr, "means:")
     for row in means:
-        print >>sys.stderr, " ".join(["%.3g" % xx for xx in row])
+        print (sys.stderr, " ".join(["%.3g" % xx for xx in row]))
 
     if vvar == 0:
-        print >>sys.stderr, "fixed variance %.3g" % sigma
+        print (sys.stderr, "fixed variance %.3g" % sigma)
     else:
-        print >>sys.stderr, "variances:"
+        print (sys.stderr, "variances:")
         for row in variances:
-            print >>sys.stderr, " ".join(["%.3g" % xx for xx in row])
-        print >>sys.stderr, "noise variances:"
-        print >>sys.stderr, " ".join(["%.3g" % xx for xx in noiseVariances])
+            print (sys.stderr, " ".join(["%.3g" % xx for xx in row]))
+        print (sys.stderr, "noise variances:")
+        print (sys.stderr, " ".join(["%.3g" % xx for xx in noiseVariances]))
 
     clusterSizes = multinomial(trainNum, clusterPrior)
 
-    print >>sys.stderr, "training cluster sizes:",\
-          " ".join([str(xx) for xx in clusterSizes])
+    print (sys.stderr, "training cluster sizes:",\
+          " ".join([str(xx) for xx in clusterSizes]))
 
     for label in labels(trainNum, clusterSizes):
-        print label, " ".join([str(xx) for xx in
+        print (label, " ".join([str(xx) for xx in
                                features(label, means, variances,
-                                        noiseMeans, noiseVariances)])
-
-    print
+                                        noiseMeans, noiseVariances)]))
 
     clusterSizes = multinomial(num, clusterPrior)
-
-    print >>sys.stderr, "cluster sizes:",\
-          " ".join([str(xx) for xx in clusterSizes])
+    print(clusterSizes)
+    print(sys.stderr, "cluster sizes:",\
+          " ".join([str(xx) for xx in clusterSizes]))
 
     for label in labels(num, clusterSizes):
-        print label, " ".join([str(xx) for xx in
+        print(label, " ".join([str(xx) for xx in
                                features(label, means, variances,
-                                        noiseMeans, noiseVariances)])
+                                        noiseMeans, noiseVariances)]))
