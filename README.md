@@ -1,5 +1,6 @@
 Project Title : Correlation Clustering on a Generative Model<br/>
-Course :        EE227B and CS281A<br/>
+Year :          Fall Sem 2014<br/>
+Course :        EE227BT and CS281A<br/>
 Members :       Deepak Pathak - pathak@<br/>
                 WeiCheng Kuo - wckuo@<br/>
                 Horia Mania - hmania@<br/>
