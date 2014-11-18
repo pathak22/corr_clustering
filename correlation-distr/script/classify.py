@@ -76,37 +76,37 @@ if __name__ == "__main__":
 
     if options.list:
         for clType,cl in CLASSIFIERS.items():
-            print clType, "\n", cl.__doc__
+            print(clType, "\n", cl.__doc__)
         sys.exit(0)
 
     dataFile = file(args[0])
-    print >>sys.stderr, "reading", dataFile
+    print(sys.stderr, "reading", dataFile)
 
     trainPoints = readDataFile(dataFile)
-    print >>sys.stderr, "read", len(trainPoints), "training points"
+    print(sys.stderr, "read", len(trainPoints), "training points")
 
     testPoints = readDataFile(dataFile)
-    print >>sys.stderr, "read", len(testPoints), "testing points"
+    print(sys.stderr, "read", len(testPoints), "testing points")
 
     try:
         classifier = CLASSIFIERS[options.classifier](
             trainPoints, testPoints, options)
     except KeyError:
-        print "No such classifier as", options.classifier
+        print("No such classifier as", options.classifier)
         sys.exit(1)
 
-    print >>sys.stderr, "training..."
+    print (sys.stderr, "training...")
     classifier.train()
 
     if options.check:
-        print >>sys.stderr, "evaluating..."
+        print(sys.stderr, "evaluating...")
         classifier.check()
     elif options.distributed:
-        print >>sys.stderr, "distributed labeling..."
+        print(sys.stderr, "distributed labeling...")
         args = list(izip(repeat(classifier),
                          batch(range(len(testPoints)), 30)))
         ssn = Session("classify", "partLabel", args, name=options.distributed)
-        print >>sys.stderr, "session created..."
+        print(sys.stderr, "session created...")
 
         if 0:
             sty = Sty("workingSession")
@@ -124,26 +124,26 @@ if __name__ == "__main__":
                 if not (queued + started):
                     jobs_done = True
                 else:
-                    print >>sys.stderr,\
-                          len(started), "started", len(queued), "queued"
+                    print(sys.stderr,\
+                          len(started), "started", len(queued), "queued")
                     sleep(10)
                 if "error" in stats and stats["error"]:
-                    print >>sys.stderr, "Errors occurred", stats["error"]
+                    print(sys.stderr, "Errors occurred", stats["error"])
                     sys.exit(1)
 
             finalScores = Scores()
-            print len(testPoints)
+            print(len(testPoints))
             for job in ssn:
                 res, scores = job.results
-                print res,
+                print(res)
                 finalScores += scores
             classifier.scores = finalScores
         else:
             sys.exit(0)
 
     else:
-        print >>sys.stderr, "labeling..."
+        print(sys.stderr, "labeling...")
         classifier.label()
 
-    print >>sys.stderr, "test classifier performance"
-    print >>sys.stderr, classifier.scores
+    print(sys.stderr, "test classifier performance")
+    print(sys.stderr, classifier.scores)
