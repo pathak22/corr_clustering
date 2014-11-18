@@ -11,12 +11,12 @@ Repo Address :	github repo @ pathak22<br/>
 --------------------------------------------------------------------------------------------<br/>
 Format of Datafile :<br/>
 --------------------------------------------------------------------------------------------<br/>
-NumOfVertices<br/>
-ClusterLabel1 Degree1 Neighbour11 Neighbour21 ........ NeighbourM1<br/>
+NumOfVertices p q epsilon<br/>
+ClusterLabel1 Neighbour11 Neighbour21 ........ NeighbourM1<br/>
 ..<br/>
 ..<br/>
 ..<br/>
-ClusterLabelN DegreeN Neighbour1N Neighbour2N ........ NeighbourMN<br/>
+ClusterLabelN Neighbour1N Neighbour2N ........ NeighbourMN<br/>
 <br/>
 <br/>
 --------------------------------------------------------------------------------------------<br/>
