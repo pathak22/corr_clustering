@@ -26,7 +26,7 @@ end
 
 % Read the geometric random graph
 % M = [p,e;e,p];%GRG
-M = zeros(3);%no knowledge about GRG
+% M = zeros();%no knowledge about GRG
 
 % Construct p_ij table for G_0
 adj_m = zeros(num_nodes);
@@ -37,9 +37,9 @@ for i = 1:num_nodes
     for j = i+1:num_nodes
         scan_id = C{j}(1);
         if any(conn_i == j)
-            adj_m(i,j) = 1-M(id+1,scan_id+1);%1-p for existing edge in G0
+            adj_m(i,j) = 1;%1-p for existing edge in G0
         else
-            adj_m(i,j) = -1+M(id+1,scan_id+1);%p for non-existing edge in G0
+            adj_m(i,j) = -1;%p for non-existing edge in G0
         end        
     end
 end
