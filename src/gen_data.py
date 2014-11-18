@@ -10,13 +10,13 @@ import numpy as np
 # Initalize parameters
 # ---------------------------------------------------------------------
 random.seed(222)
-k = 2
-th = 0.3
-ni = 4
-n = ni*k
-p = 0.4
-q = 0.4
-epsilon = 0.1
+k = 10       # number of cluster
+th = 0.3    # GRG threshold
+ni = 50      # number of nodes per cluster
+n = ni*k    # total number of nodes
+p = 0.2     # intra-cluster flipping probability
+q = 0.4     # inter-cluster connected flipping probability
+epsilon = 0.05 # inter-cluster disconnected flipping probability
 
 
 # ---------------------------------------------------------------------

@@ -1,4 +1,6 @@
-str = 'sample.txt';
+% addpath('path/to/cvx/');
+addpath(genpath('/Users/wckuo/Documents/MATLAB/cvx'));
+str = '../data/data.txt';
 
 %Read first line
 [num_nodes, p, q, e] = textread(str, ...
@@ -35,11 +37,10 @@ for i = 1:num_nodes
     for j = i+1:num_nodes
         scan_id = C{j}(1);
         if any(conn_i == j)
-            adj_m(i,j) = 1-M(id,scan_id);%1-p for existing edge in G0
+            adj_m(i,j) = 1-M(id+1,scan_id+1);%1-p for existing edge in G0
         else
-            adj_m(i,j) = -1+M(id,scan_id);%p for non-existing edge in G0
-        end
-        
+            adj_m(i,j) = -1+M(id+1,scan_id+1);%p for non-existing edge in G0
+        end        
     end
 end
         
@@ -58,7 +59,7 @@ cvx_begin
   X >= 0;
 
   % find the solution to the problem
-  minimize( sum(sum(X.*(1-w)+(1-X).*w)))
+  minimize( sum(sum(X.*(1-w)+(1-X).*(1+w))))
 
 cvx_end
 
