@@ -12,7 +12,7 @@ import numpy as np
 random.seed(222)
 k = 10			# Number of cluster
 th = 0.3    	# GRG threshold
-ni = 50      	# Number of nodes per cluster
+ni = 100      	# Number of nodes per cluster
 n = ni*k    	# Total number of nodes
 p = 0.2			# Intra-cluster flipping probability
 q = 0.4			# Inter-cluster connected flipping probability

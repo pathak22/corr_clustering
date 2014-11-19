@@ -28,7 +28,7 @@ end
 % M = [p,e;e,p];%GRG
 % M = zeros();%no knowledge about GRG
 
-% Construct p_ij table for G_0
+% Construct w_ij from G0
 adj_m = zeros(num_nodes);
 for i = 1:num_nodes
     conn_i = C{i}(2:end);
@@ -45,10 +45,8 @@ for i = 1:num_nodes
 end
         
 w = adj_m+adj_m';
-v = diag(w);
-Dw = diag(v);
-w = w - Dw/2;
-
+tic;
+%% Solving SDP by CVX
 % create and solve the problem
 cvx_begin 
   % A is a PSD symmetric matrix (n-by-n)
@@ -62,4 +60,38 @@ cvx_begin
   minimize( sum(sum(X.*(1-w)+(1-X).*(1+w))))
 
 cvx_end
+
+
+%% Clustering algorithm
+cluster = cell(20,1);
+list = 1:num_nodes;
+cnt = 0;
+cl_id = 1;  %Cluster id
+
+while any(list)
+    v=list(list~=0);                                %   Find unchosen nodes 
+    perm_list = randperm(num_nodes-cnt);            %   Randomly permute the list
+    sel_node = v(perm_list(1));                     %   Pick the first node from permuted list
+    cluster{cl_id} = cat(1,cluster{cl_id},sel_node);%   Add that node to the cluster
+    list(list==sel_node)=0;                         %   Remove node from the list
+    cnt = cnt+1;                                    %   Update the count of chosen nodes
+    v=list(list~=0); 
+    for i = 1:num_nodes-cnt                         
+        vi = v(i);                                  %   Scan every unchosen node
+        bintest = binornd(1,X(sel_node,vi));        %   Binormial sampling to include in the cluster
+        if bintest
+            cluster{cl_id} = cat(1,cluster{cl_id},vi); %    Add that node to the cluster     
+            list(list==vi)=0;                       %   Remove the node from list
+            cnt = cnt+1;                            %   Update count
+        end
+    end
+    cl_id = cl_id + 1;                              %   Update cluster id
+end
+toc;
+
+celldisp(cluster);
+
+
+
+
 
