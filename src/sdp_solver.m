@@ -33,9 +33,9 @@ adj_m = zeros(num_nodes);
 for i = 1:num_nodes
     conn_i = C{i}(2:end);
     adj_m(i,i)=0;%pij = 1 for node itself
-    id = C{i}(1);
+%     id = C{i}(1);
     for j = i+1:num_nodes
-        scan_id = C{j}(1);
+%         scan_id = C{j}(1);
         if any(conn_i == j)
             adj_m(i,j) = 1;%1-p for existing edge in G0
         else
@@ -55,6 +55,9 @@ cvx_begin
   % constrained matrix entries.
   diag(X) == ones(num_nodes,1);
   X >= 0;
+  for j = 1:num_nodes
+      repmat(X(:,j),[1 num_nodes])+repmat(X(j,:),[num_nodes 1])<=ones(num_nodes,num_nodes)+X;
+  end
 
   % find the solution to the problem
   minimize( sum(sum(X.*(1-w)+(1-X).*(1+w))))
@@ -63,7 +66,8 @@ cvx_end
 
 
 %% Clustering algorithm
-cluster = cell(20,1);
+max_num_cluster = 20;
+cluster = cell(max_num_cluster,1);
 list = 1:num_nodes;
 cnt = 0;
 cl_id = 1;  %Cluster id
@@ -89,7 +93,45 @@ while any(list)
 end
 toc;
 
-celldisp(cluster);
+%% Compute the Hamming distance between our clustering and ground truth
+% Ground truth connection map
+Gt = zeros(num_nodes);
+for i = 1:num_nodes
+    gt_id = C{i}(1);
+    for j = 1:num_nodes
+        node_id = C{j}(1);
+        if (gt_id == node_id)
+            Gt(i,j) = 1;
+        end
+    end
+end
+
+%Construct table for membership of nodes in my clustering
+membership = zeros(2,num_nodes);
+membership(1,:) = 1:num_nodes;
+for i = 1:max_num_cluster
+    list = cluster{i};
+    membership(2,list) = i;
+end
+    
+
+% My clustering connection map
+myCl = zeros(num_nodes);
+for i = 1:num_nodes
+    myCl_id = membership(2,i);
+    for j = 1:num_nodes
+        node_id = membership(2,j);
+        if (myCl_id == node_id)
+            myCl(i,j) = 1;
+        end
+    end
+end
+
+% Compute Hanning distance
+H_C = xor(myCl,Gt);
+H_dist = sum(sum(H_C));
+
+% celldisp(cluster);
 
 
 
