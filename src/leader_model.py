@@ -37,34 +37,48 @@ for i in range(k):
 
 # ---------------------------------------------------------------------
 # Generate final graph after flipping : gf
+# Note: We assume that the first node (as per the index set) in every
+# cluster is the leader. This is without loss of generality as the graph
+# anyway has fully connected components without noise.
 # ---------------------------------------------------------------------
 nodeList = g0.nodes()
 edgeList = [(x,y) for x in nodeList for y in nodeList if x<y]
 gf = g0.copy()
 for e in edgeList:
-	# Both vertices in same cluster
-	if int(e[0]/ni)==int(e[1]/ni):
-		if np.random.binomial(1,p): 
-			gf.remove_edge(e[0],e[1])
+	# If one of the vertex is a leader
+	if (e[0]%ni==0) or (e[1]%ni==0):
+		# Both vertices in same cluster
+		if int(e[0]/ni)==int(e[1]/ni):
+			if np.random.binomial(1,epsilon): 
+				gf.remove_edge(e[0],e[1])
 
-	# Both vertices in diff cluster and connected in gr
-	elif gr.has_edge(e[0],e[1]):
-		if np.random.binomial(1,q):
-			gf.add_edge(e[0],e[1])
+		# Both vertices in diff cluster
+		else:
+			if np.random.binomial(1,epsilon):
+				gf.add_edge(e[0],e[1])
 
-	# Both vertices in diff cluster and not-connected in gr
+	# If none of the vertex is a leader
 	else:
-		if np.random.binomial(1,epsilon):
-			gf.add_edge(e[0],e[1])
+		# Both vertices in same cluster
+		if int(e[0]/ni)==int(e[1]/ni):
+			if np.random.binomial(1,p): 
+				gf.remove_edge(e[0],e[1])
+
+		# Both vertices in diff cluster
+		else:
+			if np.random.binomial(1,p):
+				gf.add_edge(e[0],e[1])
 
 
 # ---------------------------------------------------------------------
 # Write the data
 # ---------------------------------------------------------------------
 fid = open('./data/data_leaderModel.txt', 'w')
-fid.write('{} {} {} {}'.format(n,p,q,epsilon))
+fid.write('# First Line : n p epsilon\n')
+fid.write('# Following Lines : leaderOrNot groundTruthClusterID vertexID listOfNeighbours\n')
+fid.write('{} {} {}'.format(n,p,epsilon))
 for v in gf.nodes_iter():
-	fid.write('\n{} {}'.format(int(v/ni),v))
+	fid.write('\n{} {} {}'.format(int(v%ni==0),int(v/ni),v))
 	for i in gf.neighbors(v):
 		fid.write(' {}'.format(i))
 fid.close()
@@ -107,7 +121,7 @@ def pivot_algorithm (gOriginal):
 pivot_algorithm(gf)
 fid = open('./data/solution_leaderModel.txt', 'w')
 fid.write('# Note:  GroundTruthClusterID ObtainedClusterID dont correspond, they just denote grouping of nodes.\n')
-fid.write('Node GroundTruthClusterID ObtainedClusterID')
+fid.write('Node GroundTruthClusterID ObtainedClusterID_pivot ObtainedClusterID_densityApproach')
 for v in gf.nodes_iter():
 	fid.write('\n{} {} {}'.format(v,int(v/ni),gf.node[v]['clusterId']))
 fid.close()

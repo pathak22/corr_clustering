@@ -69,6 +69,8 @@ for e in edgeList:
 # Write the data
 # ---------------------------------------------------------------------
 fid = open('./data/data_randomGeomModel.txt', 'w')
+fid.write('# First Line : n p q epsilon\n')
+fid.write('# Following Lines : groundTruthClusterID vertexID listOfNeighbours\n')
 fid.write('{} {} {} {}'.format(n,p,q,epsilon))
 for v in gf.nodes_iter():
 	fid.write('\n{} {}'.format(int(v/ni),v))
