@@ -119,7 +119,8 @@ def density_pivot_algorithm (gOriginal):
 # ---------------------------------------------------------------------
 # This algorithm is motivated from CC-Pivot (Greedy Algorithm) Algorithm 
 # suggested  Ailon et. al. [STOC 2005] and again mentioned in Elsner et. al. 
-# [2009]. We pick the pivot with highest density in order.
+# [2009]. We pick the pivot with highest density chosen by the ordering in
+# starting.
 #
 # This function takes a graph g which is of the form networkx.Graph() 
 # and returns the clustering labels for each node with attribute key as 
@@ -127,6 +128,29 @@ def density_pivot_algorithm (gOriginal):
 #
 # This is tail recursion implementation of algorithm formatted in the 
 # form of loop, till nodes() become empty in temporary graph.
+
+	# Returns the list of vertices in decreasing order of their density
+	def sort_vertices(g):
+		densityList = []
+		verticesList = []
+		for v in g.nodes_iter():
+			totalEdges = g.degree(v)*(g.degree(v)-1)/2
+			presentEdges = 0
+			nodeList = g.neighbors(v)
+			edgeList = [(x,y) for x in nodeList for y in nodeList if x<y]
+			for e in edgeList:
+				if g.has_edge(e[0],e[1]):
+					presentEdges = presentEdges + 1
+			density = presentEdges/totalEdges if totalEdges else 0
+			densityList.append(density)
+			verticesList.append(v)
+		sortedIndices = sorted(range(len(densityList)), key=lambda k: densityList[k], reverse=True)
+		sortedVertices = [verticesList[i] for i in sortedIndices]
+		print('densityList : ',densityList,'\n verticesList:', verticesList, '\n sortedVertices:',sortedVertices)
+		return sortedVertices
+
+	'''
+	# Returns the vertex with maximum density
 	def max_density_vertex(g):
 		maxDensity = 0
 		maxDensityVertex = 0
@@ -144,13 +168,22 @@ def density_pivot_algorithm (gOriginal):
 				maxDensityVertex = v
 		print('density : ',maxDensity,' vertex:', maxDensityVertex, ' v:',v)
 		return maxDensityVertex
-
+	'''
 
 	clusterId = 500
 	gNew = gOriginal.copy()
 
+	sortedVertices = sort_vertices(gNew)
+	pivotIndex = 0
 	while gNew.nodes():
-		pivot = max_density_vertex(gNew)
+		# pivot = max_density_vertex(g)
+		if gNew.has_node(sortedVertices[pivotIndex]):
+			pivot = sortedVertices[pivotIndex]
+			pivotIndex = pivotIndex + 1
+		else:
+			pivotIndex = pivotIndex + 1
+			continue
+
 		gOriginal.node[pivot]['clusterId'] = clusterId
 		for v in gNew.neighbors(pivot):
 			gOriginal.node[v]['clusterId'] = clusterId
