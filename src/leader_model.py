@@ -114,16 +114,63 @@ def pivot_algorithm (gOriginal):
 
 
 
+# ---------------------------------------------------------------------
+def density_pivot_algorithm (gOriginal):
+# ---------------------------------------------------------------------
+# This algorithm is motivated from CC-Pivot (Greedy Algorithm) Algorithm 
+# suggested  Ailon et. al. [STOC 2005] and again mentioned in Elsner et. al. 
+# [2009]. We pick the pivot with highest density in order.
+#
+# This function takes a graph g which is of the form networkx.Graph() 
+# and returns the clustering labels for each node with attribute key as 
+# 'clusterId'.
+#
+# This is tail recursion implementation of algorithm formatted in the 
+# form of loop, till nodes() become empty in temporary graph.
+	def max_density_vertex(g):
+		maxDensity = 0
+		maxDensityVertex = 0
+		for v in g.nodes_iter():
+			totalEdges = g.degree(v)*(g.degree(v)-1)/2
+			presentEdges = 0
+			nodeList = g.neighbors(v)
+			edgeList = [(x,y) for x in nodeList for y in nodeList if x<y]
+			for e in edgeList:
+				if g.has_edge(e[0],e[1]):
+					presentEdges = presentEdges + 1
+			density = presentEdges/totalEdges if totalEdges else 0
+			if maxDensity <= density:
+				maxDensity = density
+				maxDensityVertex = v
+		return maxDensityVertex
+
+
+	clusterId = 500
+	gNew = gOriginal.copy()
+
+	while gNew.nodes():
+		pivot = max_density_vertex(gNew)
+		gOriginal.node[pivot]['clusterId'] = clusterId
+		for v in gNew.neighbors(pivot):
+			gOriginal.node[v]['clusterId'] = clusterId
+		gNew.remove_nodes_from(gNew.neighbors(pivot))
+		gNew.remove_node(pivot)
+		clusterId = clusterId + 1
+
+
 
 # ---------------------------------------------------------------------
-# Run Greedy and save output to file
+# Run pivot, density_pivot and save output to file
 # ---------------------------------------------------------------------
-pivot_algorithm(gf)
+gf1 = gf.copy()
+gf2 = gf.copy()
+pivot_algorithm(gf1)
+density_pivot_algorithm(gf2)
 fid = open('./data/solution_leaderModel.txt', 'w')
-fid.write('# Note:  GroundTruthClusterID ObtainedClusterID dont correspond, they just denote grouping of nodes.\n')
+fid.write('# Note:  GroundTruthClusterID ObtainedClusterIDs dont correspond, they just denote grouping of nodes.\n')
 fid.write('Node GroundTruthClusterID ObtainedClusterID_pivot ObtainedClusterID_densityApproach')
 for v in gf.nodes_iter():
-	fid.write('\n{} {} {}'.format(v,int(v/ni),gf.node[v]['clusterId']))
+	fid.write('\n{} {} {} {}'.format(v,int(v/ni),gf1.node[v]['clusterId'],gf2.node[v]['clusterId']))
 fid.close()
 
 
