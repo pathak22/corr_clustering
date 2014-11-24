@@ -39,10 +39,10 @@ end
 % Compute Hanning distance
 H_oCl = xor(oCl,Gt);
 dist_oCl = sum(sum(H_oCl));
-fprintf('Simple greedy Hanning distance is %d\n',dist_oCl);
+fprintf('Simple greedy Hanning distance is %d or %f percent of the entries \n',dist_oCl, dist_oCl/(num_nodes^2)*100);
 H_leader = xor(leaderCl,Gt);
 dist_leaderCl = sum(sum(H_leader));
-fprintf('Leader model Hanning distance is %d\n',dist_leaderCl);
+fprintf('Leader model distance is %d or %f percent of the entries \n',dist_leaderCl, dist_leaderCl/(num_nodes^2)*100);
 
 
 %% Compute the cost for our clustering results and ground truth

@@ -6,15 +6,16 @@
 addpath(genpath('/Users/wckuo/Documents/MATLAB/cvx'));
 str = '../data/data_leaderModel.txt';
 
-%Read the third line
-[num_nodes, p, e] = textread(str,'%d %f %f', 3);
-
 %Open file and skip the first two lines of comments and the third lines
 fileName = str;
 inputfile = fopen(str);
 fgetl(inputfile);
 fgetl(inputfile);
-fgetl(inputfile);
+data_info = fgetl(inputfile);
+v_info = str2num(data_info);
+num_nodes = v_info(1);
+p = v_info(2);
+epsilon = v_info(3);
 
 % Read in the rest
 tline = fgetl(inputfile);
@@ -33,7 +34,7 @@ end
 % Construct w_ij from G0
 adj_m = zeros(num_nodes);
 for i = 1:num_nodes
-    conn_i = C{i}(2:end);
+    conn_i = C{i}(4:end);
     adj_m(i,i)=0;%pij = 1 for node itself
 %     id = C{i}(1);
     for j = i+1:num_nodes
@@ -99,9 +100,9 @@ toc;
 % Ground truth connection map
 Gt = zeros(num_nodes);
 for i = 1:num_nodes
-    gt_id = C{i}(1);
+    gt_id = C{i}(2);
     for j = 1:num_nodes
-        node_id = C{j}(1);
+        node_id = C{j}(2);
         if (gt_id == node_id)
             Gt(i,j) = 1;
         end
@@ -134,7 +135,8 @@ H_C = xor(myCl,Gt);
 H_dist = sum(sum(H_C));
 
 fprintf('SDP Hanning distance is %d\n',H_dist);
-
+Gt_cost = sum(sum(Gt.*(1-w)+(1-Gt).*(1+w)));
+fprintf('Ground truth cost is %d\n',Gt_cost);
 % celldisp(cluster);
 
 
