@@ -146,7 +146,7 @@ def density_pivot_algorithm (gOriginal):
 			verticesList.append(v)
 		sortedIndices = sorted(range(len(densityList)), key=lambda k: densityList[k], reverse=True)
 		sortedVertices = [verticesList[i] for i in sortedIndices]
-		print('densityList : ',densityList,'\n verticesList:', verticesList, '\n sortedVertices:',sortedVertices)
+		# print('densityList : ',densityList,'\n verticesList:', verticesList, '\n sortedVertices:',sortedVertices)
 		return sortedVertices
 
 	'''
@@ -166,7 +166,7 @@ def density_pivot_algorithm (gOriginal):
 			if maxDensity <= density:
 				maxDensity = density
 				maxDensityVertex = v
-		print('density : ',maxDensity,' vertex:', maxDensityVertex, ' v:',v)
+		# print('density : ',maxDensity,' vertex:', maxDensityVertex, ' v:',v)
 		return maxDensityVertex
 	'''
 
