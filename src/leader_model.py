@@ -142,6 +142,7 @@ def density_pivot_algorithm (gOriginal):
 			if maxDensity <= density:
 				maxDensity = density
 				maxDensityVertex = v
+		# print('density : ',maxDensity,' vertex:', maxDensityVertex, ' v:',v)
 		return maxDensityVertex
 
 
