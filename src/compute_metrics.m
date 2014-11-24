@@ -7,7 +7,7 @@ fgetl(inputfile);
 fgetl(inputfile);
 
 %Read the rest into cell
-C = textscan(inputfile,'%d %d %d');
+C = textscan(inputfile,'%d %d %d %d');
 fclose(inputfile);
 
 %% Compute the Hamming distance between our clustering and ground truth
@@ -28,11 +28,24 @@ for i = 1:num_nodes
     oCl(i,idx) = 1;
 end
 
-% Compute Hanning distance
-H_C = xor(oCl,Gt);
-H_dist = sum(sum(H_C));
+% Obtained leader model clustering connection map
+leaderCl = zeros(num_nodes);
+for i = 1:num_nodes
+    leaderCl_id = C{4}(i);
+    idx = (C{4}==leaderCl_id);
+    leaderCl(i,idx) = 1;
+end
 
-%% Compute the cost for our clustering and ground truth
+% Compute Hanning distance
+H_oCl = xor(oCl,Gt);
+dist_oCl = sum(sum(H_oCl));
+fprintf('Simple greedy Hanning distance is %d\n',dist_oCl);
+H_leader = xor(leaderCl,Gt);
+dist_leaderCl = sum(sum(H_leader));
+fprintf('Leader model Hanning distance is %d\n',dist_leaderCl);
+
+
+%% Compute the cost for our clustering results and ground truth
 str_data = '../data/data_leaderModel.txt';
 
 %Open file and skip the first two lines of comments and the third lines
@@ -71,3 +84,9 @@ w = adj_m+adj_m';
 % Compute the cost
 Gt_cost = sum(sum(Gt.*(1-w)+(1-Gt).*(1+w)));
 oCl_cost = sum(sum(oCl.*(1-w)+(1-oCl).*(1+w)));
+leaderCl_cost = sum(sum(leaderCl.*(1-w)+(1-leaderCl).*(1+w)));
+
+fprintf('Ground truth cost is %d\n',Gt_cost);
+fprintf('Simple greedy cost is %d\n',oCl_cost);
+fprintf('Leader model cost is %d\n',leaderCl_cost);
+

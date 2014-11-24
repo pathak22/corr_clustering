@@ -1,17 +1,19 @@
+%data.txt format: 
+%leader(bool) cluster_id(int) vertex_id(0-N-1) list of neighbors
+%two lines of comments on top
+
 % addpath('path/to/cvx/');
 addpath(genpath('/Users/wckuo/Documents/MATLAB/cvx'));
-str = '../data/data.txt';
+str = '../data/data_leaderModel.txt';
 
-%Read first line
-[num_nodes, p, q, e] = textread(str, ...
-'%d %f %f %f', 1);
-%p: i=j, q: i!=j, E(i,j)=1, e: i!=j, E(i,j)=0
+%Read the third line
+[num_nodes, p, e] = textread(str,'%d %f %f', 3);
 
-%Open file
+%Open file and skip the first two lines of comments and the third lines
 fileName = str;
 inputfile = fopen(str);
-
-% Skip the first line
+fgetl(inputfile);
+fgetl(inputfile);
 fgetl(inputfile);
 
 % Read in the rest
@@ -130,6 +132,8 @@ end
 % Compute Hanning distance
 H_C = xor(myCl,Gt);
 H_dist = sum(sum(H_C));
+
+fprintf('SDP Hanning distance is %d\n',H_dist);
 
 % celldisp(cluster);
 

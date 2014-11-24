@@ -15,7 +15,7 @@ import numpy as np
 # ---------------------------------------------------------------------
 seed = 222
 k = 5			# Number of cluster
-ni = 20      	# Number of nodes per cluster
+ni = 50      	# Number of nodes per cluster
 n = ni*k    	# Total number of nodes
 p = 0.2			# Intra-non-leader flipping probability
 epsilon = 0.0 	# Leader-neighbor flipping probability
@@ -142,7 +142,7 @@ def density_pivot_algorithm (gOriginal):
 			if maxDensity <= density:
 				maxDensity = density
 				maxDensityVertex = v
-		# print('density : ',maxDensity,' vertex:', maxDensityVertex, ' v:',v)
+		print('density : ',maxDensity,' vertex:', maxDensityVertex, ' v:',v)
 		return maxDensityVertex
 
 
