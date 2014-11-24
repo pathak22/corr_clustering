@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------
-# Model 1 : Random Geometric Graph
+# Model 2 : Leader Generative Graph Model
 # Python script to generate data using model-1 and perform greedy pivot
 # algorithm.
 # 
@@ -15,20 +15,13 @@ import numpy as np
 # ---------------------------------------------------------------------
 seed = 222
 k = 5			# Number of cluster
-th = 0.3    	# GRG threshold
 ni = 20      	# Number of nodes per cluster
 n = ni*k    	# Total number of nodes
-p = 0.2			# Intra-cluster flipping probability
-q = 0.4			# Inter-cluster connected flipping probability
-epsilon = 0.05 	# Inter-cluster disconnected flipping probability
+p = 0.2			# Intra-non-leader flipping probability
+epsilon = 0.0 	# Leader-neighbor flipping probability
 
-
-# ---------------------------------------------------------------------
-# Generate geometric random graph : gr
-# ---------------------------------------------------------------------
 random.seed(seed)
 np.random.seed(seed)
-gr = nx.random_geometric_graph(k,th,seed)
 
 
 # ---------------------------------------------------------------------
@@ -68,7 +61,7 @@ for e in edgeList:
 # ---------------------------------------------------------------------
 # Write the data
 # ---------------------------------------------------------------------
-fid = open('./data/data_randomGeomModel.txt', 'w')
+fid = open('./data/data_leaderModel.txt', 'w')
 fid.write('{} {} {} {}'.format(n,p,q,epsilon))
 for v in gf.nodes_iter():
 	fid.write('\n{} {}'.format(int(v/ni),v))
@@ -112,14 +105,12 @@ def pivot_algorithm (gOriginal):
 # Run Greedy and save output to file
 # ---------------------------------------------------------------------
 pivot_algorithm(gf)
-fid = open('./data/solution_randomGeomModel.txt', 'w')
+fid = open('./data/solution_leaderModel.txt', 'w')
 fid.write('# Note:  GroundTruthClusterID ObtainedClusterID dont correspond, they just denote grouping of nodes.\n')
 fid.write('Node GroundTruthClusterID ObtainedClusterID')
 for v in gf.nodes_iter():
 	fid.write('\n{} {} {}'.format(v,int(v/ni),gf.node[v]['clusterId']))
 fid.close()
-
-
 
 
 
