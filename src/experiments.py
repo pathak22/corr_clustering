@@ -144,7 +144,7 @@ def run_mnist():
 # ---------------------------------------------------------------------
 gf = run_leader_model_once()
 # grid_experiment()
-# graphMnist = run_mnist()
+graphMnist = run_mnist()
 
 
 
