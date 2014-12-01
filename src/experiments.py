@@ -6,6 +6,7 @@ import random
 import networkx as nx
 import numpy as np
 import leader_model
+import time
 
 seed = 222
 random.seed(seed)
@@ -20,10 +21,10 @@ def run_leader_model_once():
 	if not os.path.isdir('../data/'):
 		os.makedirs('../data/')
 
-	k = 5			# Number of cluster
+	k = 20			# Number of cluster
 	ni = 50      	# Number of nodes per cluster
-	p = 0.2			# Intra-non-leader flipping probability
-	epsilon = 0.0 	# Leader-neighbor flipping probability
+	p = 0.4			# Intra-non-leader flipping probability
+	epsilon = 0.1 	# Leader-neighbor flipping probability
 	dataDir = '../data/data_leaderModel.txt'
 	solutionDir = '../data/solution_leaderModel.txt'
 
@@ -57,30 +58,40 @@ def grid_experiment_leader_model():
 	if not os.path.isdir('../data/experiments/'):
 		os.makedirs('../data/experiments/')
 
-	k = 5													# Number of cluster
-	niList = [50] 											# Number of nodes per cluster
-	pList = [0.2] #[x/100.0 for x in range(5,50,5)]			# Intra-non-leader flipping probability
-	epsilonList = [0.0] 									# Leader-neighbor flipping probability
-	
-	for n in niList:
-		for p in pList:
-			for epsilon in epsilonList:
-				dataDir = '../data/experiments/data_leaderModel_k{}_ni{}_p{}_epsilon{}.txt'.format(k,ni,int(p*100),int(epsilon*100))
-				solutionDir = '../data/experiments/solution_leaderModel_k{}_ni{}_p{}_epsilon{}.txt'.format(k,ni,int(p*100),int(epsilon*100))
+	def exp_aux(k,ni,p,epsilon):
+		dataDir = '../data/experiments/data_leaderModel_k{}_ni{}_p{}_epsilon{}.txt'.format(k,ni,int(p*100),int(epsilon*100))
+		solutionDir = '../data/experiments/solution_leaderModel_k{}_ni{}_p{}_epsilon{}.txt'.format(k,ni,int(p*100),int(epsilon*100))
+		gf = leader_model.gen_data(k,ni,p,epsilon,dataDir)
+		gf1 = gf.copy()
+		gf2 = gf.copy()
+		gf3 = gf.copy()
+		leader_model.pivot_algorithm(gf1)
+		leader_model.density_pivot_algorithm(gf2)
+		leader_model.vote_algorithm(gf3,'best')
+		fid = open(solutionDir, 'w')
+		fid.write('# Note:  GroundTruthClusterID ObtainedClusterIDs dont correspond, they just denote grouping of nodes.\n')
+		fid.write('# Node GroundTruthClusterID ObtainedClusterID_pivot ObtainedClusterID_density ObtainedClusterID_vote')
+		for v in gf.nodes_iter():
+			fid.write('\n{} {} {} {} {}'.format(v,int(v/ni),gf1.node[v]['clusterId'],gf2.node[v]['clusterId'],gf3.node[v]['clusterId']))
+		fid.close()
 
-				gf = leader_model.gen_data(k,ni,p,epsilon,dataDir)
-				gf1 = gf.copy()
-				gf2 = gf.copy()
-				gf3 = gf.copy()
-				leader_model.pivot_algorithm(gf1)
-				leader_model.density_pivot_algorithm(gf2)
-				leader_model.vote_algorithm(gf3,'best')
-				fid = open(solutionDir, 'w')
-				fid.write('# Note:  GroundTruthClusterID ObtainedClusterIDs dont correspond, they just denote grouping of nodes.\n')
-				fid.write('# Node GroundTruthClusterID ObtainedClusterID_pivot ObtainedClusterID_density ObtainedClusterID_vote')
-				for v in gf.nodes_iter():
-					fid.write('\n{} {} {} {} {}'.format(v,int(v/ni),gf1.node[v]['clusterId'],gf2.node[v]['clusterId'],gf3.node[v]['clusterId']))
-				fid.close()
+	k = 20													# Number of cluster
+	niList = range(10,110,10) 								# Number of nodes per cluster
+	pList = [x/100.0 for x in range(0,50,5)]				# Intra-non-leader flipping probability
+	epsilonList = [x/100.0 for x in range(0,45,5)]			# Leader-neighbor flipping probability
+	
+	k=20; p=0.4; epsilon=0.1;
+	for ni in niList:
+		exp_aux(k,ni,p,epsilon)
+
+	k=20; ni=50; epsilon=0.1;
+	for p in pList:
+		exp_aux(k,ni,p,epsilon)
+	
+	k=20; ni=50; p=0.4;
+	for epsilon in epsilonList:
+		exp_aux(k,ni,p,epsilon)
+
 
 
 
@@ -142,10 +153,19 @@ def run_mnist():
 # ---------------------------------------------------------------------
 # Running Experiments
 # ---------------------------------------------------------------------
+print('Executing Single Run .. ')
+start = time.time()
 gf = run_leader_model_once()
-# grid_experiment()
-graphMnist = run_mnist()
+end = time.time()
+print('Finished .. Time Taken = ',end-start)
 
+# print('Running Grid Experiments ..')
+# grid_experiment_leader_model()
+# print('.. Finsihed')
+
+# print('Running MNIST Experiments ..')
+# graphMnist = run_mnist()
+# print('.. Finsihed')
 
 
 
