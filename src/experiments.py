@@ -92,6 +92,10 @@ def grid_experiment_leader_model():
 	for epsilon in epsilonList:
 		exp_aux(k,ni,p,epsilon)
 
+	# This experiment is for comparison with SDP/LP 
+	k=5; p=0.3; epsilon=0.1;
+	for ni in range(5,35,5):
+		exp_aux(k,ni,p,epsilon)
 
 
 
