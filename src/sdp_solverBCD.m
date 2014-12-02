@@ -118,7 +118,7 @@ profile off
 
 
 %% Clustering algorithm
-max_num_cluster = 200;
+max_num_cluster = num_nodes;
 cluster = cell(max_num_cluster,1);
 list = 1:num_nodes;
 cnt = 0;

@@ -53,11 +53,11 @@ tic;
 % create and solve the problem
 cvx_begin 
   % A is a PSD symmetric matrix (n-by-n)
-  variable X(num_nodes,num_nodes) semidefinite;
+  variable X(num_nodes,num_nodes) semidefinite;        % symmetric; (LP) semidefinite; (SDP)
 
   % constrained matrix entries.
   diag(X) == ones(num_nodes,1);
-  X >= 0;
+  X >= 0;   % (10^-6);
   for j = 1:num_nodes
       repmat(X(:,j),[1 num_nodes])+repmat(X(j,:),[num_nodes 1])<= 1+X;
   end
@@ -69,7 +69,7 @@ cvx_end
 
 
 %% Clustering algorithm
-max_num_cluster = 20;
+max_num_cluster = num_nodes;
 cluster = cell(max_num_cluster,1);
 list = 1:num_nodes;
 cnt = 0;
