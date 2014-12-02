@@ -120,6 +120,7 @@ def read_mnist_data():
 		node = int(line[1])
 		groundTruth[node] = int(line[0])
 		
+		g.add_node(node)
 		for i in range(2,len(line)):
 			g.add_edge(node,int(line[i]))
 
