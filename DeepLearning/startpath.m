@@ -1,0 +1,1 @@
+addpath(genpath('C:\Users\Eric\Documents\MATLAB\DeepLearning'));
